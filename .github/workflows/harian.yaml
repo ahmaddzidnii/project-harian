@@ -1,0 +1,47 @@
+name: Harian
+
+# Menjalankan secara otomatis setiap 4 jam
+on:
+  schedule:
+    - cron: "0 */24 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-latest # Menjalankan job di lingkungan Ubuntu
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3 # Mengambil kode dari repository
+
+      - name: Update README with timestamp in WIB
+        run: |
+          export TZ="Asia/Jakarta"  # Mengatur zona waktu ke Asia/Jakarta (WIB)
+          TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S %Z")
+          echo "$TIMESTAMP" > README.md 
+      - name: Configure Git
+        run: |
+          git config user.name "ahmaddzidnii"  # Mengatur nama pengguna untuk commit
+          git config user.email "138422717+ahmaddzidnii@users.noreply.github.com"
+      - name: Commit changes
+        run: |
+          git add README.md
+          export TZ="Asia/Jakarta" 
+          TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S %Z")
+          arr[0]="chore(bot): 😂 auto commit"
+          arr[1]="chore(bot): 😱 auto commit"
+          arr[2]="chore(bot): 👿 auto commit"
+          arr[3]="chore(bot): 💩 auto commit"
+          arr[4]="chore(bot): 🙏 auto commit"
+          arr[5]="chore(bot): 🙈 auto commit"
+          arr[6]="chore(bot): 🐐 auto commit"
+          arr[7]="chore(bot): 🤖 auto commit"
+          arr[8]="chore(bot): 🟩 auto commit"
+          arr[9]="chore(bot): 👻 auto commit"
+          rand=$[$RANDOM % ${#arr[@]}]
+          
+          git commit -m "${arr[$rand]} at $TIMESTAMP" || echo "No changes to commit" 
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin main
